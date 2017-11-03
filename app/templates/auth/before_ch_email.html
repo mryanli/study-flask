@@ -1,0 +1,24 @@
+{%  extends 'base.html' %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky-change password{% endblock %}
+
+{% block page_content %}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+
+</div>
+{% endfor %}
+
+<div class="page-header">
+    <h1>Change your email</h1>{{str}}
+</div>
+
+<p>if you doesnt receive the email <a href=" {{url_for('auth.change_email_email')}} ">please click here to resent you a confirm email</a></p>
+
+{% endblock %}
+

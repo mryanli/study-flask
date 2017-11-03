@@ -1,0 +1,29 @@
+{%  extends 'base.html' %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky-login{% endblock %}
+
+{% block page_content %}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+
+</div>
+{% endfor %}
+
+<div class="page-header">
+    <h1>Uconfirmed</h1>
+</div>
+
+
+
+
+<p><a href="{{url_for('auth.reconfirm')}}">resent me a confirm email</a></p>
+
+{% endblock %}
+
+</body>
+</html>
