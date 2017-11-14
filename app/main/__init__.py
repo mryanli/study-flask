@@ -2,6 +2,7 @@
 # -*- coding:UTF-8 -*-
 
 from flask import Blueprint
+from ..models import Permission
 
 main = Blueprint('main', __name__)
 

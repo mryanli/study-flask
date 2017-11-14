@@ -24,6 +24,7 @@ class Config():
 
 
 class DevelopmentConfig(Config):
+    FLASKY_ADMIN='346754607@qq.com'
     #调试配置
     DEBUG = True
     #邮箱配置
@@ -31,7 +32,7 @@ class DevelopmentConfig(Config):
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = '346754607'
-    MAIL_PASSWORD = "poszkqxqkiuibjjd"
+    MAIL_PASSWORD = "zqaglkjbsonybhfi"
     #数据库配置
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
