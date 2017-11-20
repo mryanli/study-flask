@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
+
 <div class="page-header">
     <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
     {% if current_user.is_administrator %}
@@ -35,4 +36,7 @@
         Last seen {{ moment(user.last_seen).fromNow() }}.
     </p>
 </div>
+
+<h3>Posts by {{ user.username }}</h3>
+{% include '_posts.html' %}
 {% endblock%}

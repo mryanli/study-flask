@@ -6,8 +6,8 @@ from flask import render_template, request, \
     redirect, url_for, session, flash,abort
 from datetime import datetime
 from . import main
-from .forms import NameForm,EditProfileForm,EditProfileAdminForm
-from app.models import User,Role,db
+from .forms import NameForm,EditProfileForm,EditProfileAdminForm,PostForm
+from app.models import User,Role,db,Post
 from app.email import send_email
 from flask_login import login_required,current_user
 from app.decorators import admin_required, permission_required
@@ -16,11 +16,11 @@ from app.models import Permission
 @main.route('/', methods=['GET', 'POST'])
 # @login_required
 def index():
-    form = NameForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.name.data).first()
+    nameform = NameForm()
+    if nameform.validate_on_submit():
+        user = User.query.filter_by(username=nameform.name.data).first()
         if user is None:
-            user = User(username=form.name.data)
+            user = User(username=nameform.name.data)
             db.session.add(user)
             db.session.commit()
             session['known'] = False
@@ -28,17 +28,26 @@ def index():
                        'mail/new_user', user=user)
         else:
             session['known'] = True
-
         old_name = session.get('name')
-        if old_name is not None and old_name != form.name.data:
+        if old_name is not None and old_name != nameform.name.data:
             flash('looks like you have changed your name')
-        session['name'] = form.name.data
-        form.name.data = ''
+        session['name'] = nameform.name.data
+        nameform.name.data = ''
         return redirect(url_for('main.index'))
+    postform = PostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            postform.validate_on_submit():
+        post = Post(body=postform.body.data, author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', current_time=datetime.utcnow(),
-                           form=form,
+                           nameform=nameform,
+                           postform = postform,
                            name=session.get('name'),
-                           known=session.get('known', False)
+                           known=session.get('known', False),
+                           posts = posts
                            )
 
 
@@ -67,7 +76,8 @@ def user(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         abort(404)
-    return render_template('user.html',user=user)
+    posts = user.posts.order_by(Post.timestamp.desc()).all()
+    return render_template('user.html',user=user,posts=posts)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
